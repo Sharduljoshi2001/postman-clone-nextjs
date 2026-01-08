@@ -1,8 +1,10 @@
 'use client'; // This component runs in the browser
+
+import React from 'react';
 import dynamic from 'next/dynamic';
 import { Clock, Database, FileJson } from 'lucide-react';
 
-//dynamically importing ReactJson to avoid Server-Side Renderin issues
+// Dynamically importing ReactJson to avoid Server-Side Renderin issues
 const ReactJson = dynamic(() => import('react-json-view'), { ssr: false });
 
 interface ResponseProps {
@@ -34,10 +36,12 @@ export default function ResponseDisplay({ data, meta, loading, error }: Response
     );
   }
 
-  // Determine status color (Green for 2xx, Red for 4xx/5xx)
+  // Determining status color (Green for 2xx, Red for 4xx/5xx)
   const statusColor = meta && meta.statusCode >= 200 && meta.statusCode < 300 
     ? 'text-green-500' 
     : 'text-red-500';
+  // If data is null, string, or number, wrap it in an object.
+  const safeData = (data && typeof data === 'object') ? data : { response: data ?? "No Data" };
 
   return (
     <div className="flex flex-col h-full border rounded-lg bg-white shadow-sm overflow-hidden">
@@ -67,7 +71,7 @@ export default function ResponseDisplay({ data, meta, loading, error }: Response
           </div>
         ) : (
           <ReactJson 
-            src={data} 
+            src={safeData} 
             theme="rjv-default" 
             name={false} 
             displayDataTypes={false} 
